@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     img.alt = step.alt;
                     img.className = 'rounded-lg object-contain';
                     img.style.width = '100%';
-                    img.style.height = '456px';
+                    img.style.maxHeight = '456px';
                     img.style.display = 'block';
                     img.style.objectFit = 'contain';
 
