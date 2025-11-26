@@ -1,57 +1,114 @@
-// Đợi DOM load xong mới chạy code
-document.addEventListener('DOMContentLoaded', function() {
-    // Mảng ảnh cho iOS (7 ảnh)
+document.addEventListener('DOMContentLoaded', function () {
     const stepsIOS = [
-        {src: "images/b1.webp", alt: "Bước 1"},
-        {src: "images/b2.webp", alt: "Bước 2"},
-        {src: "images/b3.webp", alt: "Bước 3"},
-        {src: "images/b4.webp", alt: "Bước 4"},
-        {src: "images/b5.webp", alt: "Bước 5"},
-        {src: "images/b6.webp", alt: "Bước 6"},
-        {src: "images/b7.webp", alt: "Bước 7"}
+        { src: 'images/b1.webp', alt: 'Bước 1' },
+        { src: 'images/b2.webp', alt: 'Bước 2' },
+        { src: 'images/b3.webp', alt: 'Bước 3' },
+        { src: 'images/b4.webp', alt: 'Bước 4' },
+        { src: 'images/b5.webp', alt: 'Bước 5' },
+        { src: 'images/b6.webp', alt: 'Bước 6' },
+        { src: 'images/b7.webp', alt: 'Bước 7' }
     ];
 
-    // Mảng ảnh cho Android (5 ảnh)
     const stepsAndroid = [
-        {src: "images/b1-andr.webp", alt: "Bước 1 Android"},
-        {src: "images/b2-andr.webp", alt: "Bước 2 Android"},
-        {src: "images/b3-andr.webp", alt: "Bước 3 Android"},
-        {src: "images/b4-andr.webp", alt: "Bước 4 Android"},
-        {src: "images/b5-andr.webp", alt: "Bước 5 Android"}
+        { src: 'images/b1-andr.webp', alt: 'Bước 1 Android' },
+        { src: 'images/b2-andr.webp', alt: 'Bước 2 Android' },
+        { src: 'images/b3-andr.webp', alt: 'Bước 3 Android' },
+        { src: 'images/b4-andr.webp', alt: 'Bước 4 Android' },
+        { src: 'images/b5-andr.webp', alt: 'Bước 5 Android' }
     ];
 
-    // Function tổng quát để khởi tạo slider độc lập
     function initSlider(sliderId, leftArrowId, rightArrowId, steps, mobileLeftArrowId = null, mobileRightArrowId = null) {
         let current = 0;
-        
+
+        const isMobileSlider = sliderId.includes('-mobile');
+
         function getItemsPerPage() {
             return window.innerWidth < 1024 ? 2 : 4;
+        }
+
+        function renderDesktop(slider, itemsPerPage) {
+            const isMobileViewport = window.innerWidth < 1024;
+            slider.innerHTML = '';
+
+            for (let i = current; i < current + itemsPerPage && i < steps.length; i++) {
+                const img = document.createElement('img');
+                img.src = steps[i].src;
+                img.alt = steps[i].alt;
+                img.className = 'rounded-lg object-contain';
+                img.style.width = '100%';
+                img.style.maxWidth = isMobileViewport ? '160px' : '255px';
+                img.style.flex = '1 1 0%';
+                slider.appendChild(img);
+            }
+        }
+
+        function buildMobileTrack(slider) {
+            let track = slider.querySelector('.slider-track');
+            if (track) return track;
+
+            track = document.createElement('div');
+            track.className = 'slider-track';
+
+            for (let i = 0; i < steps.length; i += 2) {
+                const pairWrapper = document.createElement('div');
+                pairWrapper.style.display = 'flex';
+                pairWrapper.style.width = '100%';
+                pairWrapper.style.flexShrink = '0';
+                pairWrapper.style.gap = '15px';
+                pairWrapper.style.alignItems = 'flex-start';
+
+                const createItem = (step, isFullWidth = false) => {
+                    const item = document.createElement('div');
+                    item.style.flex = isFullWidth ? '0 0 100%' : '1';
+                    item.style.width = isFullWidth ? '100%' : 'calc(50% - 4px)';
+
+                    const img = document.createElement('img');
+                    img.src = step.src;
+                    img.alt = step.alt;
+                    img.className = 'rounded-lg object-contain';
+                    img.style.width = '100%';
+                    img.style.height = '456px';
+                    img.style.display = 'block';
+                    img.style.objectFit = 'contain';
+
+                    item.appendChild(img);
+                    return item;
+                };
+
+                const isLastSingle = i + 1 >= steps.length;
+                pairWrapper.appendChild(createItem(steps[i], isLastSingle));
+
+                if (!isLastSingle) {
+                    pairWrapper.appendChild(createItem(steps[i + 1]));
+                }
+
+                track.appendChild(pairWrapper);
+            }
+
+            slider.style.overflow = 'hidden';
+            slider.style.width = '100%';
+            slider.style.position = 'relative';
+
+            const pairCount = Math.ceil(steps.length / 2);
+            track.style.width = pairCount * 100 + '%';
+
+            slider.innerHTML = '';
+            slider.appendChild(track);
+
+            return track;
         }
 
         function updateSlider() {
             const slider = document.getElementById(sliderId);
             if (!slider) return;
-            
-            const itemsPerPage = getItemsPerPage();
-            const isMobile = window.innerWidth < 1024;
-            const isMobileSlider = sliderId.includes('-mobile');
-            
-            slider.innerHTML = '';
-            for (let i = current; i < current + itemsPerPage && i < steps.length; i++) {
-                const img = document.createElement('img');
-                img.src = steps[i].src;
-                img.alt = steps[i].alt;
-                img.className = "rounded-lg object-contain";
-                if (isMobileSlider) {
-                    // Mobile: 2 ảnh chia đều, mỗi ảnh chiếm ~50% width
-                    img.style.width = 'calc(50% - 4px)';
-                    img.style.flex = '0 0 calc(50% - 4px)';
-                } else {
-                    img.style.width = '100%';
-                    img.style.maxWidth = isMobile ? '160px' : '255px';
-                    img.style.flex = '1 1 0%';
-                }
-                slider.appendChild(img);
+
+            if (isMobileSlider) {
+                const track = buildMobileTrack(slider);
+                const pairIndex = Math.floor(current / 2);
+                const translateX = -(pairIndex * 100);
+                track.style.transform = 'translateX(' + translateX + '%)';
+            } else {
+                renderDesktop(slider, getItemsPerPage());
             }
         }
 
@@ -66,59 +123,126 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Desktop arrows
-        const leftArrow = document.getElementById(leftArrowId);
-        const rightArrow = document.getElementById(rightArrowId);
+        function handleMobileSwipe(direction) {
+            if (!isMobileSlider) {
+                handleArrowClick(direction);
+                return;
+            }
+
+            const maxPairIndex = Math.floor((steps.length - 1) / 2);
+            const maxCurrent = maxPairIndex * 2;
+
+            if (direction === 'left' && current >= 2) {
+                current -= 2;
+            } else if (direction === 'right' && current + 2 <= maxCurrent) {
+                current += 2;
+            } else if (direction === 'right' && current < maxCurrent) {
+                current = maxCurrent;
+            } else if (direction === 'left' && current > 0) {
+                current = 0;
+            } else {
+                return;
+            }
+
+            updateSlider();
+        }
+
+        const leftArrow = leftArrowId && document.getElementById(leftArrowId);
+        const rightArrow = rightArrowId && document.getElementById(rightArrowId);
 
         if (leftArrow) {
-            leftArrow.addEventListener('click', () => handleArrowClick('left'));
+            leftArrow.addEventListener('click', function () {
+                handleArrowClick('left');
+            });
         }
 
         if (rightArrow) {
-            rightArrow.addEventListener('click', () => handleArrowClick('right'));
+            rightArrow.addEventListener('click', function () {
+                handleArrowClick('right');
+            });
         }
 
-        // Mobile arrows (đảo ngược logic: arrow trái = chuyển sang phải, arrow phải = chuyển sang trái)
         if (mobileLeftArrowId) {
             const mobileLeftArrow = document.getElementById(mobileLeftArrowId);
             if (mobileLeftArrow) {
-                mobileLeftArrow.addEventListener('click', () => handleArrowClick('right'));
+                mobileLeftArrow.addEventListener('click', function () {
+                    handleArrowClick('right');
+                });
             }
         }
 
         if (mobileRightArrowId) {
             const mobileRightArrow = document.getElementById(mobileRightArrowId);
             if (mobileRightArrow) {
-                mobileRightArrow.addEventListener('click', () => handleArrowClick('left'));
+                mobileRightArrow.addEventListener('click', function () {
+                    handleArrowClick('left');
+                });
             }
         }
 
-        // Update on resize
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
+        if (isMobileSlider) {
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchEndX = 0;
+            let touchEndY = 0;
+            var minSwipeDistance = 50;
+
+            function attachSwipeEvents() {
+                var sliderElement = document.getElementById(sliderId);
+                if (!sliderElement || sliderElement.hasAttribute('data-swipe-attached')) return;
+
+                sliderElement.setAttribute('data-swipe-attached', 'true');
+
+                sliderElement.addEventListener('touchstart', function (e) {
+                    var touch = e.changedTouches[0];
+                    touchStartX = touch.screenX;
+                    touchStartY = touch.screenY;
+                }, { passive: true });
+
+                sliderElement.addEventListener('touchend', function (e) {
+                    var touch = e.changedTouches[0];
+                    touchEndX = touch.screenX;
+                    touchEndY = touch.screenY;
+                    handleSwipe();
+                }, { passive: true });
+
+                function handleSwipe() {
+                    var swipeDistanceX = touchStartX - touchEndX;
+                    var swipeDistanceY = touchStartY - touchEndY;
+
+                    if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY) && Math.abs(swipeDistanceX) > minSwipeDistance) {
+                        if (swipeDistanceX > 0) {
+                            handleMobileSwipe('right');
+                        } else {
+                            handleMobileSwipe('left');
+                        }
+                    }
+                }
+            }
+
+            setTimeout(attachSwipeEvents, 500);
+        }
+
+        var resizeTimeout;
+        window.addEventListener('resize', function () {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                current = 0; // Reset to first page on resize
+            resizeTimeout = setTimeout(function () {
+                current = 0;
                 updateSlider();
             }, 250);
         });
 
-        // Khởi tạo slider
         updateSlider();
     }
 
-    // Khởi tạo slider iOS (slider đầu tiên) - 7 ảnh
     initSlider('steps-slider', 'left-arrow', 'right-arrow', stepsIOS, 'left-arrow-mobile', 'right-arrow-mobile');
-    
-    // Khởi tạo slider iOS cho mobile (nếu có)
+
     if (document.getElementById('steps-slider-mobile')) {
         initSlider('steps-slider-mobile', null, null, stepsIOS, 'left-arrow-mobile-ios', 'right-arrow-mobile-ios');
     }
 
-    // Khởi tạo slider Android (slider thứ hai) - 5 ảnh, hoạt động độc lập
     initSlider('steps-slider-2', 'left-arrow-2', 'right-arrow-2', stepsAndroid, 'left-arrow-2-mobile', 'right-arrow-2-mobile');
-    
-    // Khởi tạo slider Android cho mobile (nếu có)
+
     if (document.getElementById('steps-slider-2-mobile')) {
         initSlider('steps-slider-2-mobile', null, null, stepsAndroid, 'left-arrow-mobile-android', 'right-arrow-mobile-android');
     }

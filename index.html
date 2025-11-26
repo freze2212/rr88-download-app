@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RR88 - HƯỚNG DẪN TẢI APP</title>
+    <link rel="icon" type="image/png" href="images/favicon_rr88.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .mobile-bg {
@@ -22,6 +23,11 @@
         img {
             user-select: none;
             -webkit-user-drag: none;
+        }
+        .slider-track {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
         }
     </style>
 </head>
@@ -135,7 +141,7 @@
             </div>
             <img id="right-arrow-2" src="images/arrow-body.webp" alt="Arrow Main Right" class="hidden lg:block w-16 h-auto object-contain self-center cursor-pointer absolute z-10" style="transform: scaleX(-1); user-select:none; right: -120px;">
             <img id="right-arrow-2-mobile" src="images/arrow-body.webp" alt="Arrow Main Right" class="lg:hidden w-10 h-auto object-contain self-center cursor-pointer z-10" style="transform: scaleX(-1); user-select:none;">
-        </div> 
+        </div>
     </section>
     </div>
     
@@ -187,10 +193,10 @@
                                 </a>
                                 <a href="https://images.1097638.com/wsd-images-prod/rr88f4/merchant_resource/mobileconfig/rr88f4_2.4.3_20251124191306.mobileconfig" download>
                                     <img src="images/ios.webp" alt="App Store" class="w-full max-w-[140px] h-auto object-contain rounded-lg mx-auto" />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
                 </div>
                 <!-- Support -->
                 <div class="border-2 text-[14px] rounded-2xl lg:rounded-[2.5rem] bg-white flex flex-col items-center justify-between px-3 py-2 bg-blue-50 mt-4" style="border-color: rgba(66, 133, 244, 1); max-width: 710px !important;margin: 30px auto;">
@@ -235,8 +241,8 @@
             <div class="w-full mx-auto flex justify-between items-center gap-2 my-6 relative px-4" style="margin-bottom: 0 !important; padding-bottom: 0 !important;">
                 <div id="steps-slider-2-mobile" class="flex w-full justify-between items-center gap-2">
                     <!-- Images will be injected here -->
-                </div>
             </div>
+        </div>
         </section>
     </div>
     
