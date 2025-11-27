@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Config maxHeight cho mobile slider theo breakpoint
     function getMobileStepMaxHeight() {
         const w = window.innerWidth;
-        if (w <= 360) return '41vh';
-        if (w <= 375) return '43vh';
-        if (w <= 390) return '45vh';
-        return '49vh'; // default
+        if (w <= 375) return '48vh';
+        if (w <= 390) return '50vh';
+        if (w <= 414) return '54vh';
+        return '55vh'; // default
     }
 
     function initSlider(sliderId, leftArrowId, rightArrowId, steps, mobileLeftArrowId = null, mobileRightArrowId = null) {
