@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', function () {
         { src: 'images/b5-andr.webp', alt: 'Bước 5 Android' }
     ];
 
+    // Config maxHeight cho mobile slider theo breakpoint
+    function getMobileStepMaxHeight() {
+        const w = window.innerWidth;
+        if (w <= 360) return '41vh';
+        if (w <= 375) return '43vh';
+        if (w <= 390) return '45vh';
+        return '49vh'; // default
+    }
+
     function initSlider(sliderId, leftArrowId, rightArrowId, steps, mobileLeftArrowId = null, mobileRightArrowId = null) {
         let current = 0;
 
@@ -67,10 +76,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     img.alt = step.alt;
                     img.className = 'rounded-lg object-contain';
                     img.style.width = '100%';
-                    img.style.maxHeight = '456px';
+                    img.style.height = 'auto';
+                    img.style.maxHeight = getMobileStepMaxHeight();
                     img.style.display = 'block';
                     img.style.objectFit = 'contain';
-
                     item.appendChild(img);
                     return item;
                 };
@@ -107,6 +116,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const pairIndex = Math.floor(current / 2);
                 const translateX = -(pairIndex * 100);
                 track.style.transform = 'translateX(' + translateX + '%)';
+                
+                // Update maxHeight của tất cả ảnh khi resize
+                const allImages = track.querySelectorAll('img');
+                const newMaxHeight = getMobileStepMaxHeight();
+                allImages.forEach(function(img) {
+                    img.style.maxHeight = newMaxHeight;
+                });
             } else {
                 renderDesktop(slider, getItemsPerPage());
             }
